@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "simple": {
+      "format": "[%(levelname)s|%(module)s|%(name)s||L%(lineno)d] %(asctime)s: %(message)s",
+      "datefmt": "%Y-%m-%dT%H:%M:%S%z"
+    },
+    "detailed": {
+      "format": "[%(levelname)s|%(module)s|%(name)s|%(funcName)s|L%(lineno)d] %(asctime)s: %(message)s",
+      "datefmt": "%Y-%m-%dT%H:%M:%S%z"
+    },
+    "json": {
+      "()": "handling_logging.logger_configuration.JSONFormatter",
+      "fmt_keys": {
+        "timestamp": "timestamp",
+        "level": "levelname",
+        "logger": "name",
+        "module": "module",
+        "function": "funcName",
+        "line": "lineno",
+        "thread_name": "threadName",
+        "message": "message"
+      }
+    }
+  },
+  "filters": {
+    "no_error_filter": {
+      "()": "handling_logging.logger_configuration.LevelFilter",
+      "level": "WARNING"
+    },
+    "module_filter": {
+      "()": "handling_logging.logger_configuration.ModuleFilter",
+      "include_modules": ["process_ifc_file", "handling_ifc.ifc_handler"],
+      "exclude_modules": []
+    },
+    "name_filter": {
+      "()": "handling_logging.logger_configuration.NameFilter",
+      "include_names": ["handling_ifc.ifc_handler"],
+      "exclude_names": []
+    }
+  },
+  "handlers": {
+    "stderr": {
+      "class": "logging.StreamHandler",
+      "level": "WARNING",
+      "formatter": "detailed",
+      "stream": "ext://sys.stderr"
+    },
+    "stdout": {
+      "class": "logging.StreamHandler",
+      "level": "DEBUG",
+      "formatter": "detailed",
+      "stream": "ext://sys.stdout",
+      "filters": ["no_error_filter"]
+    },
+    "full_file": {
+      "class": "logging.handlers.RotatingFileHandler",
+      "level": "DEBUG",
+      "formatter": "detailed",
+      "filename": "full_file.log",
+      "maxBytes": 6291456,
+      "backupCount": 10
+    },
+    "full_file_json": {
+      "class": "logging.handlers.RotatingFileHandler",
+      "level": "DEBUG",
+      "formatter": "json",
+      "filename": "full_file.log.jsonl",
+      "maxBytes": 6291456,
+      "backupCount": 10
+    }
+  },
+  "loggers": {},
+    "root": {
+      "level": "DEBUG",
+      "handlers": ["stderr", "stdout", "full_file", "full_file_json"]
+    }
+  }

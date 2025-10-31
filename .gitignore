@@ -1,0 +1,6 @@
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+.pytest_cache/*
+data/*
+dump/*

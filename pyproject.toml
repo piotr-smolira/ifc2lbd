@@ -1,0 +1,60 @@
+[project]
+authors = [{name = "piotr-smolira", email = "pimas@dtu.dk"}]
+dependencies = []
+name = "ifc2lbd"
+requires-python = ">= 3.11"
+version = "0.1.0"
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[tool.pixi.workspace]
+channels = ["conda-forge", "ifcopenshell"]
+platforms = ["win-64"]
+
+[tool.pixi.pypi-dependencies]
+ifc2lbd = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+convert = "python src/main.py"
+
+[tool.pixi.feature.stable-pypi.dependencies]
+python = ">=3.11,<3.14"
+
+[tool.pixi.feature.stable-conda.dependencies]
+python = "*"
+ifcopenshell = ">=0.8.3.post1,<0.9"
+lark = ">=1.3.0,<2"
+
+[tool.pixi.feature.experimental-conda.dependencies]
+python = "*"
+ifcopenshell = { version = ">=0.8.4alpha251015,<0.9", channel = "ifcopenshell" }
+lark = ">=1.3.0,<2"
+
+[tool.pixi.feature.test.dependencies]
+pytest = "*"
+
+[tool.pixi.feature.performance-test.dependencies]
+psutil = "*"
+pytest-benchmark = "*"
+
+[tool.pixi.environments]
+stable-conda = { features = ["stable-conda"], no-default-feature = true }
+stable-pypi = { features = ["stable-pypi"], no-default-feature = true }
+experimental-conda = { features = ["experimental-conda"], no-default-feature = true }
+test = ["test"]
+perf-test = ["test", "performance-test"]
+
+[tool.pixi.feature.stable-conda.tasks]
+attr = "python src/lbd/attribute_name.py"
+cli = "python src/main.py"
+test = "python src/main.py -i data/input/Duplex.ifc -o data/output/Duplex-spf.ttl --verbose"
+rail_test = "python src/main.py -i data/input/Rail.ifc -o data/output/Rail.ttl --verbose"
+
+[tool.pixi.feature.experimental-conda.tasks]
+stream_test = "python src/lbd/TTL_writer_strings_stream.py"
+stream = "python src/main.py -i data/input/Viadotto.ifc -o data/output/Viadotto-stream.ttl --stream --verbose"
+
+[dependency-groups]
+stable-pypi = ["ifcopenshell>=0.8.3.post2,<0.9"]
