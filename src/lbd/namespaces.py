@@ -19,7 +19,7 @@ def get_namespaces(schema_source) -> dict[str, str]:
         "BASE": "http://example.org/base#",
         "mifc": mini_ifc_name,
         "inst": "https://lbd-lbd.lbd/ifc/instances#",
-        "rdf": "http://www.w3.org/1999/02/22-rdf#",
+        "rdf": "https://www.w3.org/1999/02/22-rdf-syntax-ns#",
         "xsd": "http://www.w3.org/2001/XMLSchema#",
         "owl": "http://www.w3.org/2002/07/owl#"
     }
