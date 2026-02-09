@@ -41,6 +41,9 @@ def string_writer_mini_ifcOWL(model, output_path: str, namespaces: Dict[str, str
     INST = namespaces["inst"]
     XSD = namespaces["xsd"]
 
+    if geometry:
+        namespaces["geo"] = "http://www.opengis.net/ont/geosparql#"
+
     schema = wrapper.schema_by_name(model.schema_identifier)
     
     triple_count = 0
@@ -86,12 +89,12 @@ def string_writer_mini_ifcOWL(model, output_path: str, namespaces: Dict[str, str
                     pred_obj[pred].append(obj)
 
             if geometry:
-                for s, p, o in geometry.lookup(inst, subj):
+                for s, p, o in geometry.lookup(inst, subj, namespaces=namespaces):
                     if s == subj:
                         pred_obj[p].append(o)
                     else:
                         # @todo should be further optimized, prefixes and all...
-                        f.write(f"inst:{s.rsplit('/',1)[1]} {p} {o} .\n\n")
+                        f.write(f"{s} {p} {o} .\n\n")
                         triple_count += 1
 
             f.write(f"{subj} a ifc:{inst.is_a()}")

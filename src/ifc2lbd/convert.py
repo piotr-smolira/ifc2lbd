@@ -76,12 +76,6 @@ def ifc_to_lbd_ttl(input_ifc_path: str, output_ttl_path: str, stream: bool = Fal
         schema_source = file_path if file_path else ifc_model_or_iterator
     else:
         ifc_model_or_iterator = load_ifc(input_ifc_path)
-
-        if converter in WITH_GEOMETRY_PROCESSING:
-            proc = geometry_processor(ifc_model_or_iterator)
-            proc.process()
-            proc.remove_from_file()
-
         schema_source = ifc_model_or_iterator
     
     load_time = time.time() - start_load
@@ -90,7 +84,11 @@ def ifc_to_lbd_ttl(input_ifc_path: str, output_ttl_path: str, stream: bool = Fal
     
     # Get namespaces for conversion
     namespaces = get_namespaces(schema_source)
-    
+    if not stream and converter in WITH_GEOMETRY_PROCESSING:
+        proc = geometry_processor(ifc_model_or_iterator)
+        proc.process(namespaces.get("inst"))
+        proc.remove_from_file()
+
     # Writer
     start_write = time.time()
     if stream:
