@@ -1,6 +1,6 @@
 [project]
 authors = [{name = "piotr-smolira", email = "pimas@dtu.dk"}]
-dependencies = []
+dependencies = ["toposort>=1.10,<2", "ifcopenshell>=0.8.4.post1,<0.9", "rdflib", "requests", "beautifulsoup4"]
 name = "ifc2lbd"
 requires-python = ">= 3.11"
 version = "0.1.0"
@@ -23,6 +23,9 @@ convert = "python src/main.py"
 python = ">=3.11,<3.14"
 requests = "*"
 beautifulsoup4 = "*"
+toposort = ">=1.10,<2"
+rdflib = "*"
+ifcopenshell = ">=0.8.4.post1,<0.9"
 
 [tool.pixi.feature.stable-conda.dependencies]
 python = "*"
@@ -42,15 +45,19 @@ pytest = "*"
 psutil = "*"
 pytest-benchmark = "*"
 
+[tool.pixi.feature.benchmark.dependencies]
+psutil = "*"
+
 [tool.pixi.environments]
 stable-conda = { features = ["stable-conda"], no-default-feature = true }
-stable-pypi = { features = ["stable-pypi"], no-default-feature = true }
-experimental-conda = { features = ["experimental-conda"], no-default-feature = true }
+stable-pypi = { features = ["stable-pypi", "benchmark"], no-default-feature = true }
+experimental-conda = { features = ["experimental-conda", "benchmark"], no-default-feature = true }
 test = ["test"]
 perf-test = ["test", "performance-test"]
 
 [tool.pixi.dependencies]
 pyoxigraph = ">=0.5.3.post1,<0.6"
+psutil = "*"
 
 [tool.pixi.feature.stable-conda.tasks]
 attr = "python src/lbd/attribute_name.py"
@@ -82,5 +89,15 @@ refactored_test = "python src/main.py -i test_files/InfraBridge.ifc -o test_file
 
 functional_test = "python src/main.py -i test_files/InfraBridge.ifc -o test_files/InfraBridge-functional-test.ttl --converter mini_ifcowl_complete2 --stream --verbose"
 
+geom = "python src/main.py -i data/input/Viadotto.ifc -o data/output/Viadotto-geom.ttl --converter mini_ifcowl_wkt --verbose --benchmark"
+
+refac = "python src/main.py -i data/input/Duplex.ifc -o data/output/Duplex-refactored-test.ttl --converter mini_ifcowl_complete --stream --verbose --benchmark"
+
+func = "python src/main.py -i data/input/Duplex.ifc -o data/output/Duplex-functional-test.ttl --converter mini_ifcowl_complete2 --stream --verbose --benchmark"
+
+modelo_only_ifc = "python src/main.py -i data/input/modelo_MEP.ifc -o data/output/modelo_MEP.ttl --converter mini_ifcowl_complete --stream --verbose --benchmark"
+
+modelo_geom = "python src/main.py -i data/input/IFC4_validated.ifc -o data/output/IFC4_validated-geom.ttl --converter mini_ifcowl_wkt --verbose --benchmark"
+
 [dependency-groups]
-stable-pypi = ["ifcopenshell>=0.8.4.post1,<0.9"]
+stable-pypi = ["ifcopenshell>=0.8.4.post1,<0.9"] 
