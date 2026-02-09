@@ -81,9 +81,9 @@ def format_literal(value: Any, scientific_floats: bool = True) -> str:
     if val_type is str:
         return f'"{value}"'
     elif val_type is bool:
-        return f'"{str(value).lower()}"^^xsd:boolean'
+        return f'{str(value).lower()}'
     elif val_type is int:
-        return f'"{value}"^^xsd:integer'
+        return f'{value}'
     elif val_type is float:
         if scientific_floats:
             # Format with scientific notation like: 5.84313725490196E-1
