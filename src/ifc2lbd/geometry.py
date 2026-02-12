@@ -31,9 +31,10 @@ class geometry_processor:
 
         # we don't care about type geometry, clean it up so that it doesn't retain shape representations
         for ty in self.file.by_type('IfcTypeProduct'):
-            for rmap in ty.RepresentationMaps:
-                all_geometry.update(filter(lambda i: i.is_entity(), self.file.traverse(rmap)))
-            ty.RepresentationMaps = None
+            if ty.RepresentationMaps:
+                for rmap in ty.RepresentationMaps:
+                    all_geometry.update(filter(lambda i: i.is_entity(), self.file.traverse(rmap)))
+                ty.RepresentationMaps = None
 
         for proddef in self.file.by_type('ifcproductdefinitionshape'):
             for prod_rep in itertools.product(proddef.ShapeOfProduct, proddef.Representations):
